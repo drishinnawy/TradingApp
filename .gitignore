@@ -1,0 +1,25 @@
+# Buildozer 
+.buildozer/ 
+bin/ 
+*.apk 
+ 
+# Python 
+__pycache__/ 
+*.pyc 
+*.pyo 
+*.pyd 
+*.log 
+ 
+# Backup files 
+*.bak 
+*.swp 
+*.swo 
+*.tmp 
+ 
+# macOS 
+.DS_Store 
+ 
+# Windows 
+Thumbs.db 
+ehthumbs.db 
+Desktop.ini 
