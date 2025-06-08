@@ -18,6 +18,7 @@ git add .
 git commit -m "رفع ملفات المشروع"
 
 :: رفع الملفات إلى GitHub - الفرع الرئيسي
+git branch -M main
 git push -u origin main --force
 
 echo -------------------------------------------
