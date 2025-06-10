@@ -1,32 +1,22 @@
-
 [app]
 
-title = StockTradingApp
-package.name = stockapp
+title = أفضل حاسبة تداول
+package.name = tradingapp
 package.domain = org.example
-
 source.dir = .
-source.include_exts = py,png,jpg,kv,atlas,ttf
+source.include_exts = py,kv,ttf,otf,png,jpg,json
+source.include_patterns = Cairo-Regular.ttf
 
-version = 0.1
-requirements = python3,kivy,arabic_reshaper,python-bidi
-orientation = portrait
+version = 1.0
 
-fullscreen = 1
+requirements = python3,kivy==2.1.0,kivymd,requests,matplotlib,kivy_garden.matplotlib,android,cython
 
-# إدراج الخطوط
-android.allow_backup = True
-android.permissions = INTERNET
+android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
-[buildozer]
-log_level = 2
-warn_on_root = 1
-
-[android]
-android.api = 31
+android.api = 33
 android.minapi = 21
+android.sdk = 33
 android.ndk = 25b
-android.archs = arm64-v8a,armeabi-v7a
-android.bootstrap = sdl2
-android.ndk_api = 21
-copy_libs = 1
+android.arch = armeabi-v7a, arm64-v8a
+
+android.debug = 1
