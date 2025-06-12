@@ -9,7 +9,7 @@ source.include_patterns = *.ttf, *.otf, *.jpg, *.png, *.json
 
 version = 1.0
 
-requirements = kivy==2.1.0,kivymd,requests,matplotlib,kivy_garden.matplotlib,cython==0.29.36,pillow
+requirements = python3,kivy==2.1.0,kivymd,requests,matplotlib,kivy_garden.matplotlib,cython==0.29.36,pillow
 
 android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
