@@ -15,7 +15,7 @@ android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
 android.minapi = 21
 android.api = 31
-android.ndk = 23b
+android.ndk = 25b
 android.archs = arm64-v8a
 
 android.gradle_dependencies = com.android.support:support-v4:28.0.0
