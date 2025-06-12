@@ -1,3 +1,4 @@
+print('Hello from modified TradingApp')
 from kivy.lang import Builder
 from kivymd.app import MDApp
 from kivy.core.window import Window
@@ -14,8 +15,6 @@ from kivymd.uix.selectioncontrol import MDCheckbox
 from kivymd.uix.toolbar import MDTopAppBar
 from kivymd.uix.menu import MDDropdownMenu
 from kivy.metrics import dp
-from kivy.garden.matplotlib.backend_kivyagg import FigureCanvasKivyAgg
-import matplotlib.pyplot as plt
 import webbrowser
 import csv
 import os
@@ -23,7 +22,7 @@ import random
 import datetime
 import requests
 
-Window.size = (360, 700)
+Window.size = (360, 700)  # يمكنك جعلها ديناميكية لاحقًا
 
 KV = '''
 MDScreen:
@@ -155,10 +154,6 @@ MDScreen:
                 on_release: app.save_csv()
 
             MDRaisedButton:
-                text: "عرض الرسم البياني للأرباح"
-                on_release: app.show_chart()
-
-            MDRaisedButton:
                 text: "تحميل كـ PDF"
                 on_release: app.export_pdf()
 '''
@@ -174,107 +169,45 @@ class TradingApp(MDApp):
         try:
             if currency.upper() == "SAR":
                 return 1
-            response = requests.get(f"https://api.exchangerate.host/latest?base=SAR")
+            response = requests.get("https://api.exchangerate.host/latest?base=SAR")
+            response.raise_for_status()
             data = response.json()
-            rate = data['rates'].get(currency.upper(), None)
-            return rate if rate else 1
-        except:
+            return data.get('rates', {}).get(currency.upper(), 1)
+        except requests.exceptions.RequestException:
             return 1
 
     def calculate(self):
         try:
-            self.total_cost = 0
-            self.total_qty = 0
-            self.prices = []
-            self.profit_values = []
-
+            total_cost, total_qty, prices = 0, 0, []
             for i in range(1, 6):
-                price = self.root.ids[f'price{i}'].text
-                qty = self.root.ids[f'qty{i}'].text
+                price, qty = self.root.ids[f'price{i}'].text, self.root.ids[f'qty{i}'].text
                 if price and qty:
-                    p = float(price)
-                    q = int(qty)
-                    self.total_cost += p * q
-                    self.total_qty += q
-                    self.prices.append(p)
+                    p, q = float(price), int(qty)
+                    total_cost += p * q
+                    total_qty += q
+                    prices.append(p)
 
-            avg_price = self.total_cost / self.total_qty if self.total_qty > 0 else 0
+            avg_price = total_cost / total_qty if total_qty > 0 else 0
             sell_price = float(self.root.ids['sell_price'].text or 0)
             platform_fee = float(self.root.ids['platform_fee'].text)
-            total_cost_with_fee = self.total_cost * (1 + platform_fee)
-            total_sell = sell_price * self.total_qty * (1 - platform_fee)
-            self.profit = total_sell - total_cost_with_fee
+            total_cost_with_fee = total_cost * (1 + platform_fee)
+            total_sell = sell_price * total_qty * (1 - platform_fee)
+            profit = total_sell - total_cost_with_fee
 
             currency = self.root.ids['currency'].text.upper()
             rate = self.get_currency_rate(currency)
 
-            converted_avg_price = avg_price * rate
-            converted_total_cost = total_cost_with_fee * rate
-            converted_profit = self.profit * rate
-
-            self.root.ids['result_label'].text = f"متوسط السعر: {converted_avg_price:.2f} {currency}\nالتكلفة الإجمالية: {converted_total_cost:.2f} {currency}\nالربح/الخسارة: {converted_profit:.2f} {currency}"
+            self.root.ids['result_label'].text = f"متوسط السعر: {avg_price * rate:.2f} {currency}\nالتكلفة الإجمالية: {total_cost_with_fee * rate:.2f} {currency}\nالربح/الخسارة: {profit * rate:.2f} {currency}"
         except Exception as e:
             Snackbar(text=f"خطأ في الحساب: {str(e)}").open()
 
     def open_tickerchart(self):
         code = self.root.ids['stock_code'].text.strip()
         if code:
-            url = f"https://www.tickerchart.net/app/ar?symbol={code}"
-            webbrowser.open(url)
+            webbrowser.open(f"https://www.tickerchart.net/app/ar?symbol={code}")
 
     def open_sharia(self):
         webbrowser.open("https://www.argaam.com/ar/company/shariahcompanies")
-
-    def show_recommendations(self):
-        Snackbar(text="توصيات: سابك، أرامكو، مصرف الراجحي ✅").open()
-
-    def save_csv(self):
-        try:
-            filename = f"تقرير_تداول_{datetime.datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
-            with open(filename, mode='w', newline='', encoding='utf-8') as file:
-                writer = csv.writer(file)
-                writer.writerow(['السهم', 'الرمز', 'السعر', 'العدد'])
-                for i in range(1, 6):
-                    p = self.root.ids[f'price{i}'].text
-                    q = self.root.ids[f'qty{i}'].text
-                    if p and q:
-                        writer.writerow([self.root.ids['stock_name'].text, self.root.ids['stock_code'].text, p, q])
-                writer.writerow(['', '', 'سعر البيع', self.root.ids['sell_price'].text])
-            Snackbar(text=f"تم حفظ البيانات في {filename}").open()
-        except Exception as e:
-            Snackbar(text=f"خطأ في الحفظ: {str(e)}").open()
-
-    def show_chart(self):
-        try:
-            self.calculate()
-            fig, ax = plt.subplots()
-            x = list(range(1, len(self.prices) + 1))
-            profits = [((float(self.root.ids['sell_price'].text or 0)) - p) for p in self.prices]
-            ax.bar(x, profits, color='green')
-            ax.set_title('تقلب الأرباح')
-            ax.set_xlabel('العملية')
-            ax.set_ylabel('الربح')
-            plt.grid(True)
-            self.dialog = MDDialog(title="الرسم البياني", type="custom", content_cls=FigureCanvasKivyAgg(fig))
-            self.dialog.open()
-        except Exception as e:
-            Snackbar(text=f"خطأ في عرض الرسم: {str(e)}").open()
-
-    def export_pdf(self):
-        try:
-            import matplotlib.backends.backend_pdf
-            pdf = matplotlib.backends.backend_pdf.PdfPages("تقرير_تداول.pdf")
-            fig, ax = plt.subplots()
-            self.calculate()
-            x = list(range(1, len(self.prices) + 1))
-            profits = [((float(self.root.ids['sell_price'].text or 0)) - p) for p in self.prices]
-            ax.bar(x, profits, color='blue')
-            ax.set_title("الرسم البياني للربح")
-            pdf.savefig(fig)
-            pdf.close()
-            Snackbar(text="تم تصدير التقرير إلى PDF").open()
-        except Exception as e:
-            Snackbar(text=f"خطأ في تصدير PDF: {str(e)}").open()
 
 if __name__ == '__main__':
     TradingApp().run()
