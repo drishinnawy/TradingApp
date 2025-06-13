@@ -9,7 +9,7 @@ source.include_patterns = *.ttf, *.otf, *.jpg, *.png, *.json
 
 version = 1.0
 
-requirements = python3,kivy,pyjnius
+requirements = python3,kivy
 
 android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
