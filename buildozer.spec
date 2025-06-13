@@ -7,7 +7,6 @@ source.include_exts = py,kv,ttf,otf,png,jpg,json
 source.include_patterns = *.ttf, *.otf, *.jpg, *.png, *.json
 version = 1.0
 
-# أضف هذا السطر أسفل الإعدادات الأساسية
 icon.filename = %(source.dir)s/icon.png
 
 requirements = python3,kivy,requests
