@@ -5,11 +5,12 @@ package.domain = org.example
 source.dir = .
 source.include_exts = py,kv,ttf,otf,png,jpg,json
 source.include_patterns = *.ttf, *.otf, *.jpg, *.png, *.json
+source.exclude_patterns = **/tests/*, **/test_*, **/lib2to3/tests/*
 version = 1.0
 
 icon.filename = %(source.dir)s/icon.png
 
-requirements = python3,kivy,requests
+requirements = python3,kivy,kivymd,requests
 
 android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
