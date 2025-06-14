@@ -1,0 +1,270 @@
+#:import dp kivy.metrics.dp
+
+<ArabicLabel@MDLabel>:
+    font_name: "NotoNaskhArabic-Regular.ttf"
+    halign: "right"
+    font_size: "17sp"
+
+<ArabicTextInput@TextInput>:
+    font_name: "NotoNaskhArabic-Regular.ttf"
+    halign: "right"
+    base_direction: "rtl"
+    font_size: "18sp"
+    foreground_color: 0,0,0,1
+    background_color: 1,1,1,1
+    multiline: False
+    padding: [5, 8, 5, 8]
+    size_hint_y: None
+    height: dp(40)
+
+<ArabicResult@MDLabel>:
+    font_name: "NotoNaskhArabic-Regular.ttf"
+    halign: "center"
+    font_size: "22sp"
+    size_hint_y: None
+    height: dp(44)
+    padding: [dp(10), dp(4)]
+
+<ArabicButton@MDRaisedButton>:
+    font_name: "NotoNaskhArabic-Regular.ttf"
+    font_size: "17sp"
+    size_hint_x: 0.85
+    height: dp(44)
+    pos_hint: {"center_x": 0.5}
+
+MDScreen:
+    MDTopAppBar:
+        title: app.fix_arabic("أفضل حاسبة تداول")
+        font_name: "NotoNaskhArabic-Regular.ttf"
+        elevation: 0   # إزالة الظل
+        md_bg_color: 1, 1, 1, 1
+        pos_hint: {"top": 1}
+
+    ScrollView:
+        MDBoxLayout:
+            orientation: 'vertical'
+            padding: [dp(10), dp(10), dp(10), dp(10)]
+            spacing: dp(14)
+            size_hint_y: None
+            height: self.minimum_height
+
+            Widget:
+                size_hint_y: None
+                height: dp(18)
+
+            # --- حساب عدد الأسهم الممكن شراؤها ---
+            ArabicLabel:
+                text: app.fix_arabic("حساب عدد الأسهم الممكن شراؤها")
+            Widget:
+                size_hint_y: None
+                height: dp(10)
+            ArabicLabel:
+                text: app.fix_arabic("قيمة الصفقة (المبلغ الكلي)")
+            ArabicTextInput:
+                id: deal_amount
+                input_filter: 'float'
+
+            ArabicLabel:
+                text: app.fix_arabic("سعر السهم الواحد")
+            ArabicTextInput:
+                id: possible_price
+                input_filter: 'float'
+
+            ArabicButton:
+                text: app.fix_arabic("احسب عدد الأسهم الممكن شراؤها")
+                on_release: app.calc_possible_qty()
+
+            ArabicResult:
+                id: possible_qty_result
+                text: ""
+
+            # --- الحقول الرئيسية ---
+            ArabicLabel:
+                text: app.fix_arabic("اسم السهم")
+            ArabicTextInput:
+                id: stock_name
+                on_text: app.update_arabic_label(self, arabic_stock_name_lbl)
+            ArabicLabel:
+                id: arabic_stock_name_lbl
+                text: ""
+                color: .2, .2, .6, 0.8
+                font_size: "15sp"
+
+            ArabicLabel:
+                text: app.fix_arabic("عدد الأسهم المشتراة (للعملية الأولى)")
+            ArabicTextInput:
+                id: qty1
+                on_text: app.update_arabic_label(self, arabic_qty1_lbl)
+            ArabicLabel:
+                id: arabic_qty1_lbl
+                text: ""
+                color: .2, .2, .6, 0.8
+                font_size: "15sp"
+
+            ArabicLabel:
+                text: app.fix_arabic("سعر شراء السهم الواحد (للعملية الأولى)")
+            ArabicTextInput:
+                id: price1
+                on_text: app.update_arabic_label(self, arabic_price1_lbl)
+            ArabicLabel:
+                id: arabic_price1_lbl
+                text: ""
+                color: .2, .2, .6, 0.8
+                font_size: "15sp"
+
+            ArabicLabel:
+                text: app.fix_arabic("سعر البيع")
+            ArabicTextInput:
+                id: sell_price
+                on_text: app.update_arabic_label(self, arabic_sell_price_lbl)
+            ArabicLabel:
+                id: arabic_sell_price_lbl
+                text: ""
+                color: .2, .2, .6, 0.8
+                font_size: "15sp"
+
+            ArabicLabel:
+                text: app.fix_arabic("نسبة المنصة (مثال: 0.0015)")
+            ArabicTextInput:
+                id: platform_fee
+                text: "0.0015"
+                on_text: app.update_arabic_label(self, arabic_platform_fee_lbl)
+            ArabicLabel:
+                id: arabic_platform_fee_lbl
+                text: ""
+                color: .2, .2, .6, 0.8
+                font_size: "15sp"
+
+            ArabicLabel:
+                text: app.fix_arabic("العملة (مثال: SAR, USD, EUR)")
+            ArabicTextInput:
+                id: currency
+                text: "SAR"
+                on_text: app.update_arabic_label(self, arabic_currency_lbl)
+            ArabicLabel:
+                id: arabic_currency_lbl
+                text: ""
+                color: .2, .2, .6, 0.8
+                font_size: "15sp"
+
+            ArabicLabel:
+                text: app.fix_arabic("عمليات شراء إضافية")
+                bold: True
+                halign: "center"
+
+            GridLayout:
+                cols: 2
+                row_force_default: True
+                row_default_height: dp(50)
+                spacing: dp(10)
+                size_hint_x: 1
+                size_hint_y: None
+                height: self.minimum_height
+
+                ArabicLabel:
+                    text: app.fix_arabic("عدد الأسهم")
+                    halign: "center"
+                ArabicLabel:
+                    text: app.fix_arabic("سعر الشراء")
+                    halign: "center"
+
+                ArabicTextInput:
+                    id: qty2
+                    on_text: app.update_arabic_label(self, arabic_qty2_lbl)
+                ArabicTextInput:
+                    id: price2
+                    on_text: app.update_arabic_label(self, arabic_price2_lbl)
+                ArabicLabel:
+                    id: arabic_qty2_lbl
+                    text: ""
+                    color: .5, .5, .5, 1
+                    font_size: "13sp"
+                ArabicLabel:
+                    id: arabic_price2_lbl
+                    text: ""
+                    color: .5, .5, .5, 1
+                    font_size: "13sp"
+
+                ArabicTextInput:
+                    id: qty3
+                    on_text: app.update_arabic_label(self, arabic_qty3_lbl)
+                ArabicTextInput:
+                    id: price3
+                    on_text: app.update_arabic_label(self, arabic_price3_lbl)
+                ArabicLabel:
+                    id: arabic_qty3_lbl
+                    text: ""
+                    color: .5, .5, .5, 1
+                    font_size: "13sp"
+                ArabicLabel:
+                    id: arabic_price3_lbl
+                    text: ""
+                    color: .5, .5, .5, 1
+                    font_size: "13sp"
+
+                ArabicTextInput:
+                    id: qty4
+                    on_text: app.update_arabic_label(self, arabic_qty4_lbl)
+                ArabicTextInput:
+                    id: price4
+                    on_text: app.update_arabic_label(self, arabic_price4_lbl)
+                ArabicLabel:
+                    id: arabic_qty4_lbl
+                    text: ""
+                    color: .5, .5, .5, 1
+                    font_size: "13sp"
+                ArabicLabel:
+                    id: arabic_price4_lbl
+                    text: ""
+                    color: .5, .5, .5, 1
+                    font_size: "13sp"
+
+                ArabicTextInput:
+                    id: qty5
+                    on_text: app.update_arabic_label(self, arabic_qty5_lbl)
+                ArabicTextInput:
+                    id: price5
+                    on_text: app.update_arabic_label(self, arabic_price5_lbl)
+                ArabicLabel:
+                    id: arabic_qty5_lbl
+                    text: ""
+                    color: .5, .5, .5, 1
+                    font_size: "13sp"
+                ArabicLabel:
+                    id: arabic_price5_lbl
+                    text: ""
+                    color: .5, .5, .5, 1
+                    font_size: "13sp"
+
+            ArabicButton:
+                text: app.fix_arabic("حساب المتوسط")
+                on_release: app.calc_average()
+            ArabicResult:
+                id: average_result
+                text: ""
+
+            ArabicButton:
+                text: app.fix_arabic("حساب التكلفة الإجمالية")
+                on_release: app.calc_total_cost()
+            ArabicResult:
+                id: cost_result
+                text: ""
+
+            ArabicButton:
+                text: app.fix_arabic("حساب الربح/الخسارة")
+                on_release: app.calc_profit()
+            ArabicResult:
+                id: profit_result
+                text: ""
+
+            ArabicButton:
+                text: app.fix_arabic("مسح جميع الحقول")
+                on_release: app.clear_results()
+
+            ArabicButton:
+                text: app.fix_arabic("عرض شرعية الأسهم (أرقام)")
+                on_release: app.open_sharia()
+
+            ArabicButton:
+                text: app.fix_arabic("فتح صفحة الأسهم في تكرتشارت")
+                on_release: app.open_tickerchart()
