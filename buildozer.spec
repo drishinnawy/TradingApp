@@ -10,7 +10,7 @@ version = 1.0
 
 icon.filename = %(source.dir)s/icon.png
 
-requirements = python3,kivy,kivymd,requests
+requirements = python3,kivy,kivymd,requests,pyjnius
 
 android.permissions = INTERNET,WRITE_EXTERNAL_STORAGE,READ_EXTERNAL_STORAGE
 
