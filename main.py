@@ -160,10 +160,10 @@ MDScreen:
 
 class TradingApp(MDApp):
     def build(self):
-        self.title = "أفضل حاسبة تداول"
-        self.theme_cls.primary_palette = "BlueGray"
-        self.theme_cls.theme_style = "Light"
-        return Builder.load_string(KV)
+    self.title = "أفضل حاسبة تداول"
+    self.theme_cls.primary_palette = "BlueGray"
+    self.theme_cls.theme_style = "Light"
+    return Builder.load_file("tradingapp.kv")
 
     def get_currency_rate(self, currency):
         try:
